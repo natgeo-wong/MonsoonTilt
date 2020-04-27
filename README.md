@@ -1,6 +1,6 @@
-# **<div align="center">MonsoonTilt</div>**
+# **<div align="center">MonsoonTilt: Investigating parameters affecting Monsoon Transitions across Hemispheres using simple Aquaplanet Models</div>**
 
-This repository contains the analysis scripts and output for the **MonsoonTilt** project, which aims to investigate how the axial tilt/obliquity affects the abruptness of the Monsoon Transition.
+This repository contains the analysis scripts and output for the **MonsoonTilt** project, which aims to investigate how parameters such as axial tilt/obliquity affects the abruptness of the Monsoon Transition.
 
 **Created/Mantained By:** Nathanael Wong (nathanaelwong@fas.harvard.edu)
 > Introductory Text Here.
@@ -34,4 +34,4 @@ instantiate
 ```
 
 ## **Other Acknowledgements**
-> Project Repository Template generated using [DrWatson.jl](https://github.com/JuliaDynamics/DrWatson.jl) created by George Datseris.\
+> Project Repository Template generated using [DrWatson.jl](https://github.com/JuliaDynamics/DrWatson.jl) created by George Datseris.
