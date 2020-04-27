@@ -1,0 +1,120 @@
+&main_nml
+    days     = 360
+    hours    = 0
+    minutes  = 0
+    seconds  = 0
+    dt_atmos = 600
+    calendar = 'NO_CALENDAR'
+/
+
+&idealized_moist_phys_nml
+    do_damping        = .true.
+    turb              = .true.
+    mixed_layer_bc    = .true.
+    do_virtual        = .false.
+    do_simple         = .true.
+    roughness_mom     = 3.21e-05
+    roughness_heat    = 3.21e-05
+    roughness_moist   = 3.21e-05
+    two_stream_gray   = .true.
+    convection_scheme = 'SIMPLE_BETTS_MILLER'
+/
+
+&vert_turb_driver_nml
+    do_mellor_yamada = .false.      ! default: True
+    do_diffusivity   = .true.       ! default: False
+    do_simple        = .true.       ! default: False
+    constant_gust    = 0.0          ! default: 1.0
+    use_tau          = .false.
+/
+
+&diffusivity_nml
+    do_entrain         = .false.    ! Option not available in Tapio FMS
+    do_simple          = .true.     ! Option not available in Tapio FMS\
+/
+
+&surface_flux_nml
+    use_virtual_temp = .false.
+    do_simple        = .true.
+    old_dtaudv       = .true.
+/
+
+&atmosphere_nml
+    idealized_moist_model = .true.
+/
+
+&mixed_layer_nml
+    tconst                 = 285
+    prescribe_initial_dist = .true.
+    evaporation            = .true.
+    depth                  = 1.0
+    land_depth             = -1.0       ! Land depth.  Negative values set land_depth to depth
+    trop_depth             = -1.0       ! Depth of Tropical Ocean.  Negative values set trop_depth to depth
+    albedo_value           = 0.31
+    do_qflux               = .false.     ! create qflux as per Merlis et al. 2013, calls qflux_nml
+    do_warmpool            = .false.    ! do tropical heating
+    load_qflux             = .false.    ! if there is a qflux file
+    time_varying_qflux     = .false.    ! does qflux vary with time
+/
+
+&qe_moist_convection_nml
+    rhbm    = 0.7
+    Tmin    = 160
+    Tmax    = 350
+/
+
+&betts_miller_nml
+    rhbm         = .7
+    do_simp      = .false.
+    do_shallower = .true.
+/
+
+&lscale_cond_nml
+    do_simple = .true.
+    do_evap   = .true.
+/
+
+&sat_vapor_pres_nml
+    do_simple = .true.
+/
+
+&damping_driver_nml
+    do_rayleigh        = .true.
+    trayfric           = -0.25
+    sponge_pbottom     =  5000
+    do_conserve_energy = .true.
+/
+
+&two_stream_gray_rad_nml
+    rad_scheme     = 'frierson'
+    do_seasonal    = .true.        ! If false, then no seasonal cycle
+    atm_abs        = 0.22           ! Shortwave optical thickness
+    ir_tau_eq      = 7.2
+    ir_tau_pole    = 1.8
+/
+
+&diag_manager_nml
+   mix_snapshot_average_fields = .false.
+/
+
+&fms_nml
+   domains_stack_size = 600000
+/
+
+&fms_io_nml
+   threading_write = 'single'
+   fileset_write   = 'single'
+/
+
+&spectral_dynamics_nml
+    damping_order             = 4
+    water_correction_limit    = 200e2
+    reference_sea_level_press = 1.0e5
+    valid_range_t             = 100,800
+    initial_sphum             = 2e-6
+    vert_coord_option         = 'uneven_sigma'  ! Options are 'even_sigma', 'uneven_sigma' and 'input'
+    surf_res                  = 0.1             ! Default 0.5 for MiMA, 0.1 for Tapio FMS
+    scale_heights             = 5.0             ! Default 9.0 for MiMA, 5.0 for Tapio FMS
+    exponent                  = 2.0             ! Default 7.0 for MiMA, 2.0 for Tapio FMS
+    robert_coeff              = 0.03
+/
