@@ -28,7 +28,7 @@ cb.compile()  # compile the source code to working directory $GFDL_WORK/codebase
 # create an Experiment object to handle the configuration of model parameters
 # and output diagnostics
 
-exp = Experiment('control', codebase=cb)
+exp = Experiment('tiltE-slab5', codebase=cb)
 
 #Add any input files that are necessary for a particular experiment.
 #exp.inputfiles = [os.path.join(GFDL_BASE,'input/land_masks/era_land_t42.nc'),os.path.join(GFDL_BASE,'input/rrtm_input_files/ozone_1990.nc'),
@@ -59,11 +59,17 @@ exp.clear_rundir()
 exp.namelist = f90nml.read('namelist.nml')
 exp.set_resolution(*RESOLUTION)
 
+exp.update_namelist({
+    'mixed_layer_nml': {
+        'depth' : 5.0
+    }
+})
+
 #Define Restart File
 spinup_fin = os.path.join(GFDL_DATA,'spinup/restarts/res0003.tar.gz')
 
 #Lets do a run!
 if __name__=="__main__":
     exp.run(1, use_restart=True, restart_file=spinup_fin, num_cores=NCORES)
-    for i in range(2,11):
+    for i in range(2,21):
         exp.run(i, num_cores=NCORES)

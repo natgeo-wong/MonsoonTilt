@@ -4,7 +4,7 @@ import numpy as np
 
 import f90nml
 
-from isca import IscaCodeBase, DiagTable, Experiment, Namelist, GFDL_BASE
+from isca import IscaCodeBase, DiagTable, Experiment, Namelist, GFDL_BASE, GFDL_DATA
 
 NCORES = 32
 RESOLUTION = 'T42', 25
@@ -28,7 +28,7 @@ cb.compile()  # compile the source code to working directory $GFDL_WORK/codebase
 # create an Experiment object to handle the configuration of model parameters
 # and output diagnostics
 
-exp = Experiment('spinup', codebase=cb)
+exp = Experiment('tilt10-slab2', codebase=cb)
 
 #Add any input files that are necessary for a particular experiment.
 #exp.inputfiles = [os.path.join(GFDL_BASE,'input/land_masks/era_land_t42.nc'),os.path.join(GFDL_BASE,'input/rrtm_input_files/ozone_1990.nc'),
@@ -61,12 +61,18 @@ exp.set_resolution(*RESOLUTION)
 
 exp.update_namelist({
     'astronomy_nml': {
-        'obliq' : 0.0
+        'obliq' : 10.0
+    },
+    'mixed_layer_nml': {
+        'depth' : 2.0
     }
 })
 
+#Define Restart File
+spinup_fin = os.path.join(GFDL_DATA,'spinup/restarts/res0003.tar.gz')
+
 #Lets do a run!
 if __name__=="__main__":
-    exp.run(1, use_restart=False, num_cores=NCORES, overwrite_data=True)
-    for i in range(2,4):
+    exp.run(1, use_restart=True, restart_file=spinup_fin, num_cores=NCORES)
+    for i in range(2,21):
         exp.run(i, num_cores=NCORES)
