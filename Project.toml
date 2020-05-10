@@ -2,11 +2,11 @@ name = "MonsoonTilt"
 authors = ["Nathanael Wong <natgeo.wong@outlook.com>"]
 
 [deps]
-ClimateIsca = "bbcbd578-9e06-4913-a16c-0f12dae524fe"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 DrWatson = "634d3b9d-ee7a-5ddf-bec9-22491ea816e1"
 Glob = "c27321d9-0574-5035-807b-f59d2c89b15c"
+IscaTools = "bbcbd578-9e06-4913-a16c-0f12dae524fe"
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
 NumericalIntegration = "e7bfaba1-d571-5449-8927-abc22e82249b"
