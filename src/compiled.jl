@@ -5,13 +5,12 @@ function streamfunctioninit(;
     config::AbstractString
 )
 
-    init,iroot = iscastartup(prjpath=prjpath,config=config,fname="atmos_daily");
+    init,iroot = iscastartup(
+        prjpath=prjpath,config=config,
+        fname="atmos_daily",welcome=false
+    );
+
     iscastreamfunction(init,iroot);
-    iscaanalysis(init,iroot,modID="cpre",parID="psi_v",plvls=350e2);
-    iscaanalysis(init,iroot,modID="cpre",parID="psi_v",plvls=450e2);
-    iscaanalysis(init,iroot,modID="cpre",parID="psi_v",plvls=500e2);
-    iscaanalysis(init,iroot,modID="cpre",parID="psi_v",plvls=550e2);
-    iscaanalysis(init,iroot,modID="cpre",parID="psi_v",plvls=650e2);
 
 end
 
@@ -20,7 +19,11 @@ function precipanalysis(;
     config::AbstractString
 )
 
-    init,iroot = iscastartup(prjpath=prjpath,config=config,fname="atmos_daily");
+    init,iroot = iscastartup(
+        prjpath=prjpath,config=config,
+        fname="atmos_daily",welcome=false
+    );
+
     iscaanalysis(init,iroot,modID="msfc",parID="precipitation",plvls="sfc");
 
 end
@@ -30,7 +33,11 @@ function zmeanprecip(
     config::AbstractString
 )
 
-    init,iroot = iscastartup(prjpath=prjpath,config=config,fname="atmos_daily");
+    init,iroot = iscastartup(
+        prjpath=prjpath,config=config,
+        fname="atmos_daily",welcome=false
+    );
+
     imod,ipar,itime = iscainitialize(init,modID="msfc",parID="precipitation");
     nruns = itime["nruns"]; nlat = length(imod["lat"]); zprcp = zeros(nlat,360,nruns);
 
@@ -50,7 +57,11 @@ function zmeanpsiv500(
     config::AbstractString
 )
 
-    init,iroot = iscastartup(prjpath=prjpath,config=config,fname="atmos_daily");
+    init,iroot = iscastartup(
+        prjpath=prjpath,config=config,
+        fname="atmos_daily",welcome=false
+    );
+
     imod,ipar,itime = iscainitialize(init,modID="msfc",parID="psi_v",pressure=500e2);
     nruns = itime["nruns"]; nlat = length(imod["lat"]); zprcp = zeros(nlat,360,nruns);
     lvl = ipar["level"]
