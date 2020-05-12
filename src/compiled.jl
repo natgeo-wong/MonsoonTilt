@@ -37,7 +37,7 @@ function zmeanprecip(
     init,iroot = iscastartup(
         prjpath=prjpath,config=config,
         fname="atmos_daily",welcome=false
-    );
+    ); lat = init["lat"];
 
     imod,ipar,itime = iscainitialize(init,modID="msfc",parID="precipitation");
     nruns = itime["nruns"]; nlat = length(imod["lat"]); zprcp = zeros(nlat,360,nruns);
@@ -54,7 +54,7 @@ function zmeanprecip(
     @info "$(Dates.now()) - Saving compiled zonal-mean PRECIPITAION (ALL) data for CONFIG $(uppercase(config))..."
     dpath = datadir("compiled/zmean-precip/"); if !isdir(dpath); mkpath(dpath); end
     @save "$(dpath)/$(config)-zmean-precip.jld2" zprcp
-    @save "$(dpath)/lat.jld2" init["lat"]
+    @save "$(dpath)/lat.jld2" lat
 
 end
 
@@ -67,7 +67,7 @@ function zmeanpsiv500(
     init,iroot = iscastartup(
         prjpath=prjpath,config=config,
         fname="atmos_daily",welcome=false
-    );
+    );  lat = init["lat"];
 
     imod,ipar,itime = iscainitialize(init,modID="msfc",parID="psi_v",pressure=500e2);
     nruns = itime["nruns"]; nlat = length(imod["lat"]); zprcp = zeros(nlat,360,nruns);
@@ -83,6 +83,6 @@ function zmeanpsiv500(
     @info "$(Dates.now()) - Saving compiled zonal-mean MERIDIONAL STREAMFUNCTION data at 500 hPa for CONFIG $(uppercase(config))..."
     dpath = datadir("compiled/zmean-psiv/"); if !isdir(dpath); mkpath(dpath); end
     @save "$(dpath)/$(config)-zmean-psiv-500hPa.jld2" zprcp
-    @save "$(dpath)/lat.jld2" init["lat"]
+    @save "$(dpath)/lat.jld2" lat
 
 end
