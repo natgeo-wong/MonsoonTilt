@@ -48,7 +48,8 @@ function zmeanprecip(
     end
 
     dpath = datadir("compiled/zmean-precip/"); if !isdir; mkpath(dpath); end
-    @save "$(datadir("$(config)-zmean-precip")).jld2" zprcp
+    @save "$(dpath)/$(config)-zmean-precip.jld2" zprcp
+    @save "$(dpath)/lat.jld2" init["lat"]
 
 end
 
@@ -73,6 +74,7 @@ function zmeanpsiv500(
     end
 
     dpath = datadir("compiled/zmean-psiv/"); if !isdir; mkpath(dpath); end
-    @save "$(datadir("$(config)-zmean-psiv-500hPa")).jld2" zprcp
+    @save "$(dpath)/$(config)-zmean-psiv-500hPa.jld2" zprcp
+    @save "$(dpath)/lat.jld2" init["lat"]
 
 end
