@@ -69,8 +69,8 @@ function zmeanpsiv500(
         fname="atmos_daily",welcome=false
     );  lat = init["lat"];
 
-    imod,ipar,itime = iscainitialize(init,modID="msfc",parID="psi_v",pressure=500e2);
-    nruns = itime["nruns"]; nlat = length(imod["lat"]); zprcp = zeros(nlat,360,nruns);
+    imod,ipar,itime = iscainitialize(init,modID="cpre",parID="psi_v",pressure=500e2);
+    nruns = itime["nruns"]; nlat = length(imod["lat"]); psiv = zeros(nlat,360,nruns);
     lvl = ipar["level"]
 
     for irun = 1 : nruns
@@ -82,7 +82,7 @@ function zmeanpsiv500(
 
     @info "$(Dates.now()) - Saving compiled zonal-mean MERIDIONAL STREAMFUNCTION data at 500 hPa for CONFIG $(uppercase(config))..."
     dpath = datadir("compiled/zmean-psiv/"); if !isdir(dpath); mkpath(dpath); end
-    @save "$(dpath)/$(config)-zmean-psiv-500hPa.jld2" zprcp
+    @save "$(dpath)/$(config)-zmean-psiv-500hPa.jld2" psiv
     @save "$(dpath)/lat.jld2" lat
 
 end
