@@ -43,7 +43,7 @@ function zmeantsurf(
         fname="atmos_daily",welcome=false
     ); lat = init["lat"];
 
-    imod,ipar,itime = iscainitialize(init,modID="msfc",parID="t_surf");
+    imod,ipar,itime = iscainitialize(init,modID="dsfc",parID="t_surf");
     nruns = itime["nruns"]; nlat = length(imod["lat"]); tsfc = zeros(nlat,360,nruns);
 
     for irun = 1 : nruns
