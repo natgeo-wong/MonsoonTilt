@@ -1,9 +1,8 @@
 using DrWatson
 @quickactivate "MonsoonTilt"
-using IscaTools
 
 global_logger(ConsoleLogger(stdout,Logging.Info))
-include(srcdir("compiled.jl"))
+include(srcdir("zmean.jl"))
 
 prjpath = "/n/holyscratch01/kuang_lab/nwong/MonsoonTilt/data/"
 

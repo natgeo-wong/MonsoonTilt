@@ -1,9 +1,8 @@
 using DrWatson
 @quickactivate "MonsoonTilt"
-using IscaTools
 
 global_logger(ConsoleLogger(stdout,Logging.Info))
-include(srcdir("compiled.jl"))
+include(srcdir("isca.jl"))
 
 prj = "/n/holyscratch01/kuang_lab/nwong/MonsoonTilt/data/"
 
