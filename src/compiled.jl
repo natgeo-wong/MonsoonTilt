@@ -103,13 +103,13 @@ function era5matrix(;
         eds,evar = erarawread(emod,epar,ereg,eroot,Date(yr,mo));
         vdat = dropdims(mean(evar[:],dims=1),dims=1); close(eds)
         vdat = dropdims(mean(reshape(vdat,nlat,24,:),dims=2),dims=2);
-        ndy  = size(prcp,2)
+        ndy  = size(vdat,2)
         ibeg = dayofyear(Date(yr,mo,1)); iend = dayofyear(Date(yr,mo,ndy))
         pmat[:,ibeg:iend,yrii] = vdat
 
     end
 
-    era5mean = mean(@view pmat[:,1:365,:],dims=3)
+    eview = @view pmat[:,1:365,:]; era5mean = mean(eview,dims=3)
     dpath = datadir("compiled/era5/"); if !isdir(dpath); mkpath(dpath); end
     @save "$(dpath)/era5-zmean-$(parID).jld2" psiv
     @save "$(dpath)/lat.jld2" lat
