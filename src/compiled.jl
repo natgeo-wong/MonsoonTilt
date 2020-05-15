@@ -87,6 +87,37 @@ function zmeanpsiv500(
 
 end
 
+function zmeanpsivall(
+    prjpath::AbstractString,
+    config::AbstractString
+)
+
+    @info "$(Dates.now()) - Beginning compilation of zonal-mean MERIDIONAL STREAMFUNCTION data at ALL PRESSURE LEVELS for CONFIG $(uppercase(config))..."
+    init,iroot = iscastartup(
+        prjpath=prjpath,config=config,
+        fname="atmos_daily",welcome=false
+    );  lat = init["lat"];
+
+    imod,ipar,itime = iscainitialize(init,modID="cpre",parID="psi_v",pressure=500e2);
+    nruns = itime["nruns"]; nlat = length(imod["lat"]); nlvls = length(imod["levels"]);
+    psiv = zeros(nlat,nlvls,360,nruns);
+
+    for irun = 1 : nruns
+        @info "$(Dates.now()) - Extracting MERIDIONAL STREAMFUNCTION data at ALL PRESSURE LEVELS for RUN $irun of CONFIG $(uppercase(config)) ..."
+        ids,ivar = iscarawread(ipar,iroot,irun=irun);
+        psiv[:,:,:,irun] = ivar[:,:,:]*1
+        close(ids)
+    end
+
+    psiv = dropdims(mean(psiv,dims=4),dims=4);
+
+    @info "$(Dates.now()) - Saving compiled zonal-mean MERIDIONAL STREAMFUNCTION data at ALL PRESSURE LEVELS for CONFIG $(uppercase(config))..."
+    dpath = datadir("compiled/zmean-psiv/"); if !isdir(dpath); mkpath(dpath); end
+    @save "$(dpath)/$(config)-zmean-psiv-500hPa.jld2" psiv
+    @save "$(dpath)/lat.jld2" lat
+
+end
+
 function era5matrix(;
     modID::AbstractString, parID::AbstractString,
     pre::Integer=0, nyr::Integer=40
