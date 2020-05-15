@@ -47,7 +47,7 @@ function zmeanprecip(
         ids,ivar = iscarawread(ipar,iroot,irun=irun);
 
         @info "$(Dates.now()) - Performing zonal-averaging for RUN $irun of CONFIG $(uppercase(config)) ..."
-        zprcp[:,:,irun] = dropdims(mean(ivar[:],dims=1),dims=1);
+        zprcp[:,:,irun] = dropdims(mean(ivar[:]*1,dims=1),dims=1);
         close(ids)
     end
 
@@ -76,7 +76,7 @@ function zmeanpsiv500(
     for irun = 1 : nruns
         @info "$(Dates.now()) - Extracting MERIDIONAL STREAMFUNCTION data at 500 hPa for RUN $irun of CONFIG $(uppercase(config)) ..."
         ids,ivar = iscarawread(ipar,iroot,irun=irun);
-        psiv[:,:,irun] = ivar[:,lvl,:]
+        psiv[:,:,irun] = ivar[:,lvl,:]*1
         close(ids)
     end
 
@@ -104,7 +104,7 @@ function era5matrix(;
 
         @info "$(Dates.now()) - Processing PRECIPITAION (ALL) data for $(yr)/$(mo)"
         eds,evar = erarawread(emod,epar,ereg,eroot,Date(yr,mo));
-        vdat = dropdims(mean(evar[:],dims=1),dims=1); close(eds)
+        vdat = dropdims(mean(evar[:]*1,dims=1),dims=1); close(eds)
         vdat = dropdims(mean(reshape(vdat,nlat,24,:),dims=2),dims=2);
         ndy  = size(vdat,2)
         ibeg = dayofyear(Date(yr,mo,1)); iend = dayofyear(Date(yr,mo,ndy))
