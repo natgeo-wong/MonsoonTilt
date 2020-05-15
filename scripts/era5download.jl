@@ -1,10 +1,11 @@
 using DrWatson
 @quickactivate "MonsoonTilt"
 using ClimateERA
+using GeoRegions
 
 global_logger(ConsoleLogger(stdout,Logging.Info))
 
-prjpath = "/n/holyscratch01/kuang_lab/nwong/MonsoonTilt/ecmwf/";
+prjpath = "/n/holyscratch01/kuang_lab/nwong/MonsoonTilt/data/ecmwf/";
 init,eroot = erastartup(aID=1,dID=1,path=prjpath);
 gregioninfoadd(srcdir("addGeoRegions.txt"));
 
