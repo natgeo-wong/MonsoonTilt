@@ -1,39 +1,13 @@
 using JLD2
-
-function streamfunctioninit(;
-    prjpath::AbstractString,
-    config::AbstractString
-)
-
-    init,iroot = iscastartup(
-        prjpath=prjpath,config=config,
-        fname="atmos_daily",welcome=false
-    );
-
-    iscastreamfunction(init,iroot);
-
-end
-
-function precipanalysis(;
-    prjpath::AbstractString,
-    config::AbstractString
-)
-
-    init,iroot = iscastartup(
-        prjpath=prjpath,config=config,
-        fname="atmos_daily",welcome=false
-    );
-
-    iscaanalysis(init,iroot,modID="msfc",parID="precipitation",plvls="sfc");
-
-end
+using IscaTools
+using ClimateERA
 
 function zmeanprecip(
     prjpath::AbstractString,
     config::AbstractString
 )
 
-    @info "$(Dates.now()) - Beginning compilation of zonal-mean PRECIPITAION (ALL) data for CONFIG $(uppercase(config))..."
+    @info "$(Dates.now()) - Beginning compilation of zonal-mean PRECIPITATION (ALL) data for CONFIG $(uppercase(config))..."
     init,iroot = iscastartup(
         prjpath=prjpath,config=config,
         fname="atmos_daily",welcome=false
@@ -43,7 +17,7 @@ function zmeanprecip(
     nruns = itime["nruns"]; nlat = length(imod["lat"]); zprcp = zeros(nlat,360,nruns);
 
     for irun = 1 : nruns
-        @info "$(Dates.now()) - Extracting PRECIPITAION (ALL) data for RUN $irun of CONFIG $(uppercase(config)) ..."
+        @info "$(Dates.now()) - Extracting PRECIPITATION (ALL) data for RUN $irun of CONFIG $(uppercase(config)) ..."
         ids,ivar = iscarawread(ipar,iroot,irun=irun);
 
         @info "$(Dates.now()) - Performing zonal-averaging for RUN $irun of CONFIG $(uppercase(config)) ..."
@@ -51,9 +25,39 @@ function zmeanprecip(
         close(ids)
     end
 
-    @info "$(Dates.now()) - Saving compiled zonal-mean PRECIPITAION (ALL) data for CONFIG $(uppercase(config))..."
+    @info "$(Dates.now()) - Saving compiled zonal-mean PRECIPITATION (ALL) data for CONFIG $(uppercase(config))..."
     dpath = datadir("compiled/zmean-precip/"); if !isdir(dpath); mkpath(dpath); end
     @save "$(dpath)/$(config)-zmean-precip.jld2" zprcp
+    @save "$(dpath)/lat.jld2" lat
+
+end
+
+function zmeantsurf(
+    prjpath::AbstractString,
+    config::AbstractString
+)
+
+    @info "$(Dates.now()) - Beginning compilation of zonal-mean SURFACE TEMPERATURE data for CONFIG $(uppercase(config))..."
+    init,iroot = iscastartup(
+        prjpath=prjpath,config=config,
+        fname="atmos_daily",welcome=false
+    ); lat = init["lat"];
+
+    imod,ipar,itime = iscainitialize(init,modID="msfc",parID="t_surf");
+    nruns = itime["nruns"]; nlat = length(imod["lat"]); tsfc = zeros(nlat,360,nruns);
+
+    for irun = 1 : nruns
+        @info "$(Dates.now()) - Extracting SURFACE TEMPERATURE data for RUN $irun of CONFIG $(uppercase(config)) ..."
+        ids,ivar = iscarawread(ipar,iroot,irun=irun);
+
+        @info "$(Dates.now()) - Performing zonal-averaging for RUN $irun of CONFIG $(uppercase(config)) ..."
+        tsfc[:,:,irun] = dropdims(mean(ivar[:]*1,dims=1),dims=1);
+        close(ids)
+    end
+
+    @info "$(Dates.now()) - Saving compiled zonal-mean SURFACE TEMPERATURE data for CONFIG $(uppercase(config))..."
+    dpath = datadir("compiled/zmean-precip/"); if !isdir(dpath); mkpath(dpath); end
+    @save "$(dpath)/$(config)-zmean-precip.jld2" tsfc
     @save "$(dpath)/lat.jld2" lat
 
 end
@@ -81,7 +85,7 @@ function zmeanpsiv500(
     end
 
     @info "$(Dates.now()) - Saving compiled zonal-mean MERIDIONAL STREAMFUNCTION data at 500 hPa for CONFIG $(uppercase(config))..."
-    dpath = datadir("compiled/zmean-psiv/"); if !isdir(dpath); mkpath(dpath); end
+    dpath = datadir("compiled/zmean-psiv-500hPa/"); if !isdir(dpath); mkpath(dpath); end
     @save "$(dpath)/$(config)-zmean-psiv-500hPa.jld2" psiv
     @save "$(dpath)/lat.jld2" lat
 
@@ -112,8 +116,8 @@ function zmeanpsivall(
     psiv = dropdims(mean(psiv,dims=4),dims=4);
 
     @info "$(Dates.now()) - Saving compiled zonal-mean MERIDIONAL STREAMFUNCTION data at ALL PRESSURE LEVELS for CONFIG $(uppercase(config))..."
-    dpath = datadir("compiled/zmean-psiv/"); if !isdir(dpath); mkpath(dpath); end
-    @save "$(dpath)/$(config)-zmean-psiv-500hPa.jld2" psiv
+    dpath = datadir("compiled/zmean-psiv-all/"); if !isdir(dpath); mkpath(dpath); end
+    @save "$(dpath)/$(config)-zmean-psiv-all.jld2" psiv
     @save "$(dpath)/lat.jld2" lat
 
 end
@@ -123,7 +127,7 @@ function era5matrix(;
     pre::Integer=0, nyr::Integer=40
 )
 
-    @info "$(Dates.now()) - Beginning compilation of zonal-mean PRECIPITAION (ALL) data for ERA5 reanalysis data ..."
+    @info "$(Dates.now()) - Beginning compilation of zonal-mean PRECIPITATION (ALL) data for ERA5 reanalysis data ..."
 
     prjpath = "/n/holyscratch01/kuang_lab/nwong/MonsoonTilt/data/ecmwf/"
     init,eroot = erastartup(aID=2,dID=1,path=prjpath);
@@ -133,7 +137,7 @@ function era5matrix(;
 
     for yrii = 1 : nyr, mo = 1 : 12; yr = yrii + 1979;
 
-        @info "$(Dates.now()) - Processing PRECIPITAION (ALL) data for $(yr)/$(mo)"
+        @info "$(Dates.now()) - Processing PRECIPITATION (ALL) data for $(yr)/$(mo)"
         eds,evar = erarawread(emod,epar,ereg,eroot,Date(yr,mo));
         vdat = dropdims(mean(evar[:]*1,dims=1),dims=1); close(eds)
         vdat = dropdims(mean(reshape(vdat,nlat,24,:),dims=2),dims=2);
@@ -143,7 +147,7 @@ function era5matrix(;
 
     end
 
-    @info "$(Dates.now()) - Saving compiled zonal-mean PRECIPITAION (ALL) data for ERA5 reanalysis data ..."
+    @info "$(Dates.now()) - Saving compiled zonal-mean PRECIPITATION (ALL) data for ERA5 reanalysis data ..."
     eview = @view pmat[:,1:365,:]; era5mean = mean(eview,dims=3)
     dpath = datadir("compiled/era5/"); if !isdir(dpath); mkpath(dpath); end
     @save "$(dpath)/era5-zmean-$(parID).jld2" era5mean
