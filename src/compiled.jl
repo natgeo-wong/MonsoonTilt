@@ -92,14 +92,17 @@ function era5matrix(;
     pre::Integer=0, nyr::Integer=40
 )
 
+    @info "$(Dates.now()) - Beginning compilation of zonal-mean PRECIPITAION (ALL) data for ERA5 reanalysis data ..."
+
     prjpath = "/n/holyscratch01/kuang_lab/nwong/MonsoonTilt/data/ecmwf/"
     init,eroot = erastartup(aID=2,dID=1,path=prjpath);
     emod,epar,ereg,_ = erainitialize(init,modID=modID,parID=parID,regID="ASM");
     if pre != 0; epar["level"] = pre; end
-    nlat = ereg["size"][2]; pmat = zeros(nlat,366,nyr)
+    nlat = ereg["size"][2]; lat = ereg["lat"]; pmat = zeros(nlat,366,nyr)
 
     for yrii = 1 : nyr, mo = 1 : 12; yr = yrii + 1979;
 
+        @info "$(Dates.now()) - Processing PRECIPITAION (ALL) data for $(yr)/$(mo)"
         eds,evar = erarawread(emod,epar,ereg,eroot,Date(yr,mo));
         vdat = dropdims(mean(evar[:],dims=1),dims=1); close(eds)
         vdat = dropdims(mean(reshape(vdat,nlat,24,:),dims=2),dims=2);
@@ -109,9 +112,10 @@ function era5matrix(;
 
     end
 
+    @info "$(Dates.now()) - Saving compiled zonal-mean PRECIPITAION (ALL) data for ERA5 reanalysis data ..."
     eview = @view pmat[:,1:365,:]; era5mean = mean(eview,dims=3)
     dpath = datadir("compiled/era5/"); if !isdir(dpath); mkpath(dpath); end
-    @save "$(dpath)/era5-zmean-$(parID).jld2" psiv
+    @save "$(dpath)/era5-zmean-$(parID).jld2" era5mean
     @save "$(dpath)/lat.jld2" lat
 
 end
