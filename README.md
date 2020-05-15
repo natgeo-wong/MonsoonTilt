@@ -16,6 +16,12 @@ This repository contains the analysis scripts and output for the **MonsoonTilt**
 * [x] **Axial (AXT-xx):** Vary the axial tilt / obliquity
 * [x] **Slab Depth (SLB-xx):** Vary the depth of the ocean slab / heat capacity
 
+**Reanalysis**
+* [ ] Download ERA5 data for Asian Summer Monsoon Region (70-100ºE,40ºS-40ºN)
+  * [ ] Precipitation
+  * [ ] Sea-Level Air Temperature
+* [ ] Replicate Figure 1 in Bordoni and Schneider (2008)
+
 **Analysis**
 * [x] Prelimiary analysis:
   * [x] Zonal-mean analysis of precipitation data

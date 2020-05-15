@@ -2,6 +2,7 @@ name = "MonsoonTilt"
 authors = ["Nathanael Wong <natgeo.wong@outlook.com>"]
 
 [deps]
+ClimateERA = "96028d6e-f290-464b-8a03-1e746e0363c3"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 DrWatson = "634d3b9d-ee7a-5ddf-bec9-22491ea816e1"
