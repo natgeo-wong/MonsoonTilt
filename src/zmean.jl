@@ -110,7 +110,7 @@ function zmeanpsiv500(
 
     for irun = 1 : nruns
         @info "$(Dates.now()) - Extracting MERIDIONAL STREAMFUNCTION data at 500 hPa for RUN $irun of CONFIG $(uppercase(config)) ..."
-        ids,ivar = iscarawread(ipar,iroot,irun=irun);
+        ids,ivar = iscacalcread(ipar,iroot,irun=irun);
         psiv[:,:,irun] = ivar[:,lvl,:]*1
         close(ids)
     end
@@ -139,7 +139,7 @@ function zmeanpsivall(
 
     for irun = 1 : nruns
         @info "$(Dates.now()) - Extracting MERIDIONAL STREAMFUNCTION data at ALL PRESSURE LEVELS for RUN $irun of CONFIG $(uppercase(config)) ..."
-        ids,ivar = iscarawread(ipar,iroot,irun=irun);
+        ids,ivar = iscacalcread(ipar,iroot,irun=irun);
         psiv[:,:,:,irun] = ivar[:,:,:]*1
         close(ids)
     end
