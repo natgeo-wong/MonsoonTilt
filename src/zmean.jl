@@ -74,12 +74,13 @@ function zmeantair(
     ); lat = init["lat"];
 
     imod,ipar,itime = iscainitialize(init,modID="dpre",parID="temp");
-    nruns = itime["nruns"]; nlat = length(imod["lat"]); tair = zeros(nlat,360,nruns);
+    nruns = itime["nruns"]; nlat = length(imod["lat"]); nlvls = length(imod["levels"]);
+    tair = zeros(nlat,nlvls,360,nruns);
 
     for irun = 1 : nruns
         @info "$(Dates.now()) - Extracting AIR TEMPERATURE data for RUN $irun of CONFIG $(uppercase(config)) ..."
         ids,ivar = iscarawread(ipar,iroot,irun=irun);
-        tair[:,:,:,irun] = ivar[:,:,:]*1
+        tair[:,:,:,irun] = dropdims(mean(ivar[:,:,:]*1,dims=1),dims=1)
         close(ids)
     end
 
