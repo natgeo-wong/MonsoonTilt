@@ -56,8 +56,38 @@ function zmeantsurf(
     end
 
     @info "$(Dates.now()) - Saving compiled zonal-mean SURFACE TEMPERATURE data for CONFIG $(uppercase(config))..."
-    dpath = datadir("compiled/zmean-precip/"); if !isdir(dpath); mkpath(dpath); end
-    @save "$(dpath)/$(config)-zmean-precip.jld2" tsfc
+    dpath = datadir("compiled/zmean-tsfc/"); if !isdir(dpath); mkpath(dpath); end
+    @save "$(dpath)/$(config)-zmean-tsfc.jld2" tsfc
+    @save "$(dpath)/lat.jld2" lat
+
+end
+
+function zmeantair(
+    prjpath::AbstractString,
+    config::AbstractString
+)
+
+    @info "$(Dates.now()) - Beginning compilation of zonal-mean AIR TEMPERATURE data for CONFIG $(uppercase(config))..."
+    init,iroot = iscastartup(
+        prjpath=prjpath,config=config,
+        fname="atmos_daily",welcome=false
+    ); lat = init["lat"];
+
+    imod,ipar,itime = iscainitialize(init,modID="dpre",parID="temp");
+    nruns = itime["nruns"]; nlat = length(imod["lat"]); tair = zeros(nlat,360,nruns);
+
+    for irun = 1 : nruns
+        @info "$(Dates.now()) - Extracting AIR TEMPERATURE data for RUN $irun of CONFIG $(uppercase(config)) ..."
+        ids,ivar = iscarawread(ipar,iroot,irun=irun);
+        tair[:,:,:,irun] = ivar[:,:,:]*1
+        close(ids)
+    end
+
+    tair = dropdims(mean(tair,dims=4),dims=4);
+
+    @info "$(Dates.now()) - Saving compiled zonal-mean AIR TEMPERATURE data for CONFIG $(uppercase(config))..."
+    dpath = datadir("compiled/zmean-tair-all/"); if !isdir(dpath); mkpath(dpath); end
+    @save "$(dpath)/$(config)-zmean-tair-all.jld2" tair
     @save "$(dpath)/lat.jld2" lat
 
 end
@@ -102,7 +132,7 @@ function zmeanpsivall(
         fname="atmos_daily",welcome=false
     );  lat = init["lat"];
 
-    imod,ipar,itime = iscainitialize(init,modID="cpre",parID="psi_v",pressure=500e2);
+    imod,ipar,itime = iscainitialize(init,modID="cpre",parID="psi_v");
     nruns = itime["nruns"]; nlat = length(imod["lat"]); nlvls = length(imod["levels"]);
     psiv = zeros(nlat,nlvls,360,nruns);
 
