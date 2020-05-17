@@ -123,8 +123,8 @@ function zmeanpsiv500(
         close(ids)
     end
 
-    seas = circshift(tair,(0,180,0))
-    psiv = (psiv .- reverse(psiv,dims=1))/2
+    seas = circshift(psiv,(0,180,0))
+    psiv = (psiv .- reverse(seas,dims=1))/2
 
     @info "$(Dates.now()) - Saving compiled zonal-mean MERIDIONAL STREAMFUNCTION data at 500 hPa for CONFIG $(uppercase(config))..."
     dpath = datadir("compiled/zmean-psiv-500hPa/"); if !isdir(dpath); mkpath(dpath); end
