@@ -14,20 +14,23 @@ function zmeanprecip(
     ); lat = init["lat"];
 
     imod,ipar,itime = iscainitialize(init,modID="msfc",parID="precipitation");
-    nruns = itime["nruns"]; nlat = length(imod["lat"]); zprcp = zeros(nlat,360,nruns);
+    nruns = itime["nruns"]-1; nlat = length(imod["lat"]); prcp = zeros(nlat,360,nruns);
 
     for irun = 1 : nruns
         @info "$(Dates.now()) - Extracting PRECIPITATION (ALL) data for RUN $irun of CONFIG $(uppercase(config)) ..."
-        ids,ivar = iscarawread(ipar,iroot,irun=irun);
+        ids,ivar = iscarawread(ipar,iroot,irun=irun+1);
 
         @info "$(Dates.now()) - Performing zonal-averaging for RUN $irun of CONFIG $(uppercase(config)) ..."
-        zprcp[:,:,irun] = dropdims(mean(ivar[:]*1,dims=1),dims=1);
+        prcp[:,:,irun] = dropdims(mean(ivar[:]*1,dims=1),dims=1);
         close(ids)
     end
 
+    seas = circshift(prcp,(0,180,0))
+    prcp = (prcp .+ reverse(seas,dims=1))/2
+
     @info "$(Dates.now()) - Saving compiled zonal-mean PRECIPITATION (ALL) data for CONFIG $(uppercase(config))..."
     dpath = datadir("compiled/zmean-precip/"); if !isdir(dpath); mkpath(dpath); end
-    @save "$(dpath)/$(config)-zmean-precip.jld2" zprcp
+    @save "$(dpath)/$(config)-zmean-precip.jld2" prcp
     @save "$(dpath)/lat.jld2" lat
 
 end
@@ -44,16 +47,19 @@ function zmeantsurf(
     ); lat = init["lat"];
 
     imod,ipar,itime = iscainitialize(init,modID="dsfc",parID="t_surf");
-    nruns = itime["nruns"]; nlat = length(imod["lat"]); tsfc = zeros(nlat,360,nruns);
+    nruns = itime["nruns"]-1; nlat = length(imod["lat"]); tsfc = zeros(nlat,360,nruns);
 
     for irun = 1 : nruns
         @info "$(Dates.now()) - Extracting SURFACE TEMPERATURE data for RUN $irun of CONFIG $(uppercase(config)) ..."
-        ids,ivar = iscarawread(ipar,iroot,irun=irun);
+        ids,ivar = iscarawread(ipar,iroot,irun=irun+1);
 
         @info "$(Dates.now()) - Performing zonal-averaging for RUN $irun of CONFIG $(uppercase(config)) ..."
         tsfc[:,:,irun] = dropdims(mean(ivar[:]*1,dims=1),dims=1);
         close(ids)
     end
+
+    seas = circshift(tsfc,(0,180,0))
+    tsfc = (tsfc .+ reverse(seas,dims=1))/2
 
     @info "$(Dates.now()) - Saving compiled zonal-mean SURFACE TEMPERATURE data for CONFIG $(uppercase(config))..."
     dpath = datadir("compiled/zmean-tsfc/"); if !isdir(dpath); mkpath(dpath); end
@@ -74,17 +80,19 @@ function zmeantair(
     ); lat = init["lat"];
 
     imod,ipar,itime = iscainitialize(init,modID="dpre",parID="temp");
-    nruns = itime["nruns"]; nlat = length(imod["lat"]); nlvls = length(imod["levels"]);
+    nruns = itime["nruns"]-1; nlat = length(imod["lat"]); nlvls = length(imod["levels"]);
     tair = zeros(nlat,nlvls,360,nruns);
 
     for irun = 1 : nruns
         @info "$(Dates.now()) - Extracting AIR TEMPERATURE data for RUN $irun of CONFIG $(uppercase(config)) ..."
-        ids,ivar = iscarawread(ipar,iroot,irun=irun);
+        ids,ivar = iscarawread(ipar,iroot,irun=irun+1);
         tair[:,:,:,irun] = dropdims(mean(ivar[:,:,:]*1,dims=1),dims=1)
         close(ids)
     end
 
     tair = dropdims(mean(tair,dims=4),dims=4);
+    seas = circshift(tair,(0,0,180))
+    tair = (tair .+ reverse(seas,dims=1))/2
 
     @info "$(Dates.now()) - Saving compiled zonal-mean AIR TEMPERATURE data for CONFIG $(uppercase(config))..."
     dpath = datadir("compiled/zmean-tair-all/"); if !isdir(dpath); mkpath(dpath); end
@@ -105,15 +113,18 @@ function zmeanpsiv500(
     );  lat = init["lat"];
 
     imod,ipar,itime = iscainitialize(init,modID="cpre",parID="psi_v",pressure=500e2);
-    nruns = itime["nruns"]; nlat = length(imod["lat"]); psiv = zeros(nlat,360,nruns);
+    nruns = itime["nruns"]-1; nlat = length(imod["lat"]); psiv = zeros(nlat,360,nruns);
     lvl = ipar["level"]
 
     for irun = 1 : nruns
         @info "$(Dates.now()) - Extracting MERIDIONAL STREAMFUNCTION data at 500 hPa for RUN $irun of CONFIG $(uppercase(config)) ..."
-        ids,ivar = iscacalcread(ipar,iroot,irun=irun);
+        ids,ivar = iscacalcread(ipar,iroot,irun=irun+1);
         psiv[:,:,irun] = ivar[:,lvl,:]*1
         close(ids)
     end
+
+    seas = circshift(tair,(0,180,0))
+    psiv = (psiv .- reverse(psiv,dims=1))/2
 
     @info "$(Dates.now()) - Saving compiled zonal-mean MERIDIONAL STREAMFUNCTION data at 500 hPa for CONFIG $(uppercase(config))..."
     dpath = datadir("compiled/zmean-psiv-500hPa/"); if !isdir(dpath); mkpath(dpath); end
@@ -134,17 +145,19 @@ function zmeanpsivall(
     );  lat = init["lat"];
 
     imod,ipar,itime = iscainitialize(init,modID="cpre",parID="psi_v");
-    nruns = itime["nruns"]; nlat = length(imod["lat"]); nlvls = length(imod["levels"]);
+    nruns = itime["nruns"]-1; nlat = length(imod["lat"]); nlvls = length(imod["levels"]);
     psiv = zeros(nlat,nlvls,360,nruns);
 
     for irun = 1 : nruns
         @info "$(Dates.now()) - Extracting MERIDIONAL STREAMFUNCTION data at ALL PRESSURE LEVELS for RUN $irun of CONFIG $(uppercase(config)) ..."
-        ids,ivar = iscacalcread(ipar,iroot,irun=irun);
+        ids,ivar = iscacalcread(ipar,iroot,irun=irun+1);
         psiv[:,:,:,irun] = ivar[:,:,:]*1
         close(ids)
     end
 
     psiv = dropdims(mean(psiv,dims=4),dims=4);
+    seas = circshift(psiv,(0,0,180))
+    psiv = (psiv .- reverse(seas,dims=1))/2
 
     @info "$(Dates.now()) - Saving compiled zonal-mean MERIDIONAL STREAMFUNCTION data at ALL PRESSURE LEVELS for CONFIG $(uppercase(config))..."
     dpath = datadir("compiled/zmean-psiv-all/"); if !isdir(dpath); mkpath(dpath); end
