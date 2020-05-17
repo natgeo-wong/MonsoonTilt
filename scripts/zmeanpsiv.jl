@@ -5,7 +5,7 @@ using IscaTools
 global_logger(ConsoleLogger(stdout,Logging.Info))
 include(srcdir("zmean.jl"))
 
-prjpath = "/n/holyscratch01/kuang_lab/nwong/MonsoonTilt/data/"
+prjpath = "/n/holyscratch01/kuang_lab/nwong/MonsoonTilt/data/isca"
 
 zmeanpsiv500(prjpath,"spinup");
 zmeanpsiv500(prjpath,"notilt");

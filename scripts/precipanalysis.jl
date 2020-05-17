@@ -4,7 +4,7 @@ using DrWatson
 global_logger(ConsoleLogger(stdout,Logging.Info))
 include(srcdir("isca.jl"))
 
-prj = "/n/holyscratch01/kuang_lab/nwong/MonsoonTilt/data/"
+prj = "/n/holyscratch01/kuang_lab/nwong/MonsoonTilt/data/isca"
 
 precipanalysis(prjpath=prj,config="notilt");
 precipanalysis(prjpath=prj,config="tilt5-slab1");
