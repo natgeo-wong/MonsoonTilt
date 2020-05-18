@@ -76,3 +76,21 @@ function migration(centmax::Vector)
     return pent,grad
 
 end
+
+function hadregimes(pent::Real,grad::Real)
+    if abs(pent) > 10 && abs(grad) < 0.25
+          return 1
+    elseif abs(pent) < 5 && abs(grad) < 0.25
+          return -1
+    else; return 0
+    end
+end
+
+function hadregimes(pent::Vector{<:Real},grad::Vector{<:Real})
+    nx = length(pent); regime = zeros(nx)
+    for ix = 1 : nx
+        regime[ix] = hadregimes(pent[ix],grad[ix])
+    end
+    if !any(regime .== 1); regime .= -1; end
+    return regime
+end
