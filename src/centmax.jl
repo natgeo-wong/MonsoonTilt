@@ -52,9 +52,27 @@ end
 
 function migration(centmax::Vector)
 
-    vec1 = circshift(centmax,1)
-    vec2 = circshift(centmax,-1)
     n = length(centmax); gradvec = zeros(n);
-    return (vec2 .- vec1)/2
+    for ii = 2 : n-1
+        gradvec[ii] = (centmax[ii+1]-centmax[ii-1])/2
+    end
+    gradvec[1] = NaN;#(centmax[2]-centmax[end])/4
+    gradvec[n] = NaN;#(centmax[1]-centmax[n-1])/4
+    gradvec[Int(n/2 + 1)] = NaN;#gradvec[Int(n/2 + 1)]/2
+    gradvec[Int(n/2)] = NaN;#gradvec[Int(n/2)]/2
+
+    pent = mean(reshape(centmax,5,:),dims=1)[:]
+    grad = zeros(length(pent)); gradvec = reshape(gradvec,5,:)
+
+    for ii = 1 : length(pent)
+        gradii = @view gradvec[:,ii];
+        gradib = @view gradii[gradii .!== NaN];
+        grad[ii] = mean(gradib)
+    end
+
+    pent = vcat(pent,pent[1])
+    grad = vcat(grad,grad[1])
+
+    return pent,grad
 
 end

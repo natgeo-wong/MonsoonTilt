@@ -27,6 +27,9 @@ This repository contains the analysis scripts and output for the **MonsoonTilt**
   * [x] Zonal-mean analysis of precipitation data
   * [x] Calculate streamfunction
   * [x] Time-series raw plot of precipitation and streamfunction
+* [x] Centroid and Maximum Latitudes (similar to Adams et al. [2016])
+  * [x] Calculation of centroid and maximum latitudes
+  * [x] Plot gradient of pentad against pentad (similar to Geen at al. [2019])
 * [ ] More in-depth analysis:
   * [ ] Characterize double rainfall peak in early period of monsoon
   * [ ] Scaling relationship between intensity of both rainfall peaks with axial tilt / slab depth
