@@ -17,10 +17,10 @@ This repository contains the analysis scripts and output for the **MonsoonTilt**
 * [x] **Slab Depth (SLB-xx):** Vary the depth of the ocean slab / heat capacity
 
 **Reanalysis**
-* [ ] Download ERA5 data for Asian Summer Monsoon Region (70-100ºE,40ºS-40ºN)
-  * [ ] Precipitation
-  * [ ] Sea-Level Air Temperature
-* [ ] Replicate Figure 1 in Bordoni and Schneider (2008)
+* [x] Download ERA5 data for Asian Summer Monsoon Region (70-100ºE,40ºS-40ºN)
+  * [x] Precipitation
+  * [x] Sea-Level Air Temperature
+* [x] Replicate Figure 1 in Bordoni and Schneider (2008)
 
 **Analysis**
 * [x] Prelimiary analysis:
