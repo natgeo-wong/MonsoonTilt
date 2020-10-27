@@ -3,10 +3,9 @@
 This repository contains the analysis scripts and output for the **MonsoonTilt** project, which aims to investigate how parameters such as axial tilt/obliquity affects the abruptness of the Monsoon Transition.
 
 **Created/Mantained By:** Nathanael Wong (nathanaelwong@fas.harvard.edu)
-> Introductory Text Here.
+> In this project, I run Aquaplanet GCM simulations with varying axial tilt and ocean slab depth to investigate the dependence of monsoon dynamics and the transition of the Hadley Cell between the equinoctal (eddy-momentum dependent) and soltitial (angular-momentum-conserving) regimes states, and replicate some of the work that was done by Bordoni and Schneider [2008]. We find that regime transitions occur when the slab-ocean heat capacity is low [Geen et al., 2019] and axial-tilt is ≳ 10° [Geen et al., 2020]. Using ITCZ metrics from Adam et al. [2016], we then attempt to characterize the decoupling of the precipitation maximum from the dividing streamline (i.e. the mid-tropospheric zero contour of the streamfunction).
 
-## Current Status
-
+## Progress
 **Isca Experiments**
 * [x] Create experiments (vary axial tilt)
 * [x] Compile Isca model for Aquaplanets
@@ -35,38 +34,31 @@ This repository contains the analysis scripts and output for the **MonsoonTilt**
   * [ ] Scaling relationship between intensity of both rainfall peaks with axial tilt / slab depth
   * [ ] Scaling relationship between location of minor rainfall peak with axial tilt
 
-## Project Setup
+## 0. Motivation
 
-In order to obtain the relevant data, please follow the instructions listed below:
+About a decade ago, Schneider and Bordoni [2008] showed that monsoons can occur in a spatially homogeneous Aquaplanet slab/swamp ocean (Fig. 1). Although the dynamics of monsoon systems on Earth are inevitably modified by regional topography and inhomogeneity, they are not truly necessary for monsoons to occur. Instead, it was proposed in Bordoni and Schneider [2008] that monsoons are eddy-mediated transitions between two atmospheric regime states: (1) an **equinoctal regime** where the Hadley circulation is controlled by eddy momentum fluxes, which in turn respond to thermal forcing, and (2) a **solstitial regime** where the Hadley circulation approaches the angular-momentum-conserving limit and therefore its strength directly responds to thermal forcing.
 
-### 1) Required Julia Dependencies
+The behaviour of the ITCZ relative to the divid- ing streamline that denotes the boundary between the winter and summer Hadley Cells is also different in both regimes. In the equinoctal regime, the ITCZ is co-located with the dividing streamline. However, in the solstitial regime, the ITCZ gradually decouples from the dividing streamline and is found slightly equatorward, as illustrated in Fig. 2 (see also Geen et al. [2020]). In a method similar to Geen et al. [2019], I aim to investigate parameters in Aquaplanet GCMs, specifically axial tilt and slab-depth, that can affect the transition of idealised Hadley cells from the equinoctal regime to the solstitial regime.
 
-The entire codebase of this project (except for the Isca model) is written in Julia.  If the data files are downloaded, you should be able to produce my results in their entirety.  The following are the most important Julia packages that were used in this project:
-* NetCDF Data Handling: `NCDatasets.jl`
-* Isca Output Data Handling: `IscaTools.jl`
+## 1. Isca GCM Experiments
 
-In order to reproduce the results, first you have to clone the repository, and instantiate the project environment in the Julia REPL in order to install the required packages:
-```
-git clone https://github.com/natgeo-wong/MonsoonTilt.git
-] activate .
-instantiate
-```
+## Installation
 
-### 2) Required Python Dependencies
+To (locally) reproduce this project, do the following:
 
-I generally use either the `Seaborn` or `ProPlot` `python` packages to plot my results.  Julia has a native wrapper for `Seaborn`, `Seaborn.jl`.  In this project I mainly use `ProPlot`, which can be installed for the Julia environment using `Conda.jl` and called using `PyCall.jl`.  See the GitHub repositories for `Conda.jl`, `PyCall.jl`, `Seaborn.jl`, and `ProPlot` respectively for more details.
-```
-using Conda
-Conda.add("Proplot",channel="conda-forge")
+0. Download this code base. Notice that raw data are typically not included in the
+   git-history and may need to be downloaded independently.
+1. Open a Julia console and do:
+   ```
+   julia> ] activate .
+    Activating environment at `~/Projects/TropicalRCE/Project.toml`
 
-using PyCall
-using LaTeXStrings
-pplt = pyimport("proplot");
-```
+   (TropicalRCE) pkg> instantiate
+   (TropicalRCE) pkg> add GeoRegions#master SAMTools#master
+   ```
 
-### 3) Data Files
-
-You can generate the data output files for this project by running the `Isca` GCM using the experimental setups found in `exp`.  Remember to set the `GFDL_DATA` directory to `$(prjdir)/data/raw` where `$(prjdir)` is where you have placed the current project repository.
+This will install all necessary packages for you to be able to run the scripts and
+everything should work out of the box.
 
 ## **Other Acknowledgements**
 > Project Repository Template generated using [DrWatson.jl](https://github.com/JuliaDynamics/DrWatson.jl) created by George Datseris.
